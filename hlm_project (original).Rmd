@@ -1,0 +1,456 @@
+---
+title: "Associations of investigation and substantiation proportions to the living wage ratio of California child protective services front line workers"
+author: "Sofia Guo"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+indent: true
+fontsize: 12pt
+fig_caption: yes
+geometry: margin = 1in
+urlcolor: blue
+header-includes:
+- \usepackage{pdflscape}
+- \newcommand{\blandscape}{\begin{landscape}}
+- \newcommand{\elandscape}{\end{landscape}}
+- \usepackage{cite}
+- \usepackage{setspace}\onehalfspacing
+- \usepackage{fancyhdr}
+- \setlength{\headheight}{14.49998pt}
+- \usepackage{lipsum}
+- \pagestyle{fancy}
+- \fancyhead[CO,CE]{EDUC 275G Final Project}
+- \fancyfoot[CO,CE]{Guo 2023}
+- \fancyfoot[LE,RO]{\thepage}
+- \usepackage{amsmath}
+output: 
+  pdf_document
+---
+\newpage
+\tableofcontents
+\newpage
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, eval = T, message = F, warning = F, fig.pos = 'H')
+```
+
+# I. Context
+
+## Background
+
+In California, front-end public child protective services (CPS) workers are required by law to evaluate calls of suspected child maltreatment[^1] made by the public to county reporting hotlines. Front-end workers consist of two groups: hotline screeners and emergency response (ER) workers (also known as investigators). The calls (allegations) are evaluated by hotline screeners, based on the state statutory threshold for each type of allegation; the ratio of children with allegations to the estimated child population is the **allegation rate**. Then for the screened-in calls, ER workers are assigned investigations to determine whether the child involved should be removed from their home due to significant evidence of harm or risk to the child; the ratio of children with investigated allegations to the estimated child population is the **investigation rate**[^2]. If the ER worker decides that the case demonstrates significant concern or evidence of harm, the allegations are recorded as substantiated; the ratio of children with substantiated investigations to the estimated child population is the **substantiation rate**. For substantiated cases, the ER worker decides what type of intervention is appropriate. These interventions can range from voluntary family services for general neglect cases, to the removal and placement of the child(ren) in foster care for more serious abuse cases; the ratio of children who are placed in foster care to the estimated child population is the **entry rate**.
+
+[^1]: Child maltreatment includes several types of abuse (physical, sexual, emotional, and other) and neglect (general, severe, other) which are defined under [California Welfare and Institutions Code Section 300](https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=300.&lawCode=WIC).
+
+[^2]: In this paper, the investigation and substantiation rates are modified such that instead of total child population as the denominator, the number of children with allegations and investigations are used, respectively. This creates a modified investigation rate that measures the proportion of children with allegations that are investigated, and a modified substantiation rate that measures the proportion of children with investigations that have substantiations. Detailed explanation of this modification is in section II.
+
+## Purpose
+
+Historically, front-end CPS workers have experienced high rates of burnout and turnover due to chronic understaffing, low pay, and high workloads. Since the pandemic, CPS agencies across the state have seen higher and more persistent vacancies on the front end, which has exacerbated stress on remaining workers and affected the quality of service they provide for each family. Among other reasons, front-end workers highlight the lack of emotional support from management, low pay proportional to their workload and living costs, and feelings of career dissatisfaction as reasons why they leave; these issues are widespread across counties. In response, agencies are looking for ways to increase the retention of their front-end workers. Furthermore, this CPS workforce crisis plays a role in a broader national debate regarding CPS' role in perpetuating racial disparities. Proponents of the UpEnd movement aim to abolish CPS as an institution due to its racially disproportionate involvement in families of color compared to white families. If these workforce issues continue to negatively affect the quality of service and investigations conducted by CPS, agencies may face increased worker errors that cause unnecessary harm to families. By leaving high vacancy and turnover rates unaddressed, agencies could be contributing to higher occurrences of suboptimal outcomes for disadvantaged families -- as data show, most families who are referred to CPS are poor families of color. If the goal of CPS is to promote children's safety and well-being in their families, then CPS agencies should strive to improve their workforce conditions such that they provide as much helpful assistance to families as possible and avoid of exacerbating systemic harm. Although this paper only examines investigation and substantiation relationships to the living wage, it is the first step under the broader goal of exploring relationships between county pay, worker outputs, and child outcomes.
+
+## Research questions
+
+1.  Is the **proportion of children with investigated allegations** (investigation percent) associated with CPS worker annual total wage proportional to the living wage in each county (living wage percent), controlling for county child poverty rate, political conservatism, staff size, and proportion of children with investigations to agency staff size (workload)?
+2.  Is the **proportion of children with substantiated investigations** (substantiation percent) associated with CPS worker annual total wage proportional to the living wage in each county (living wage percent), controlling for county child poverty rate, political conservatism, staff size, and proportion of children with investigations to agency staff size (workload)?
+
+### Motivation
+
+I am interested in examining the effect that investigation and substantiation percents have on the living wage percent because they may point to potential policy solutions. For example, understanding this relationship could point to a policy that increases worker wages to combat higher workloads in a given county, as currently wage increases are not dependent on worker output volume (excluding overtime hours). Each specific question's motivation is detailed below:
+
+1.  Differences in investigation percents may be associated with differences in living wage percents because higher investigation percents could be driven by higher baseline maltreatment risks in poorer counties (who cannot pay workers a living wage). Higher investigation percents indicate a higher workload because investigations are very time consuming and require physical visits to the family, which translates to increased stress upon workers who are paid proportionally less than their counterparts in richer counties (which tend to have lower rates of allegations which lowers the overall workload). It may be that ER workers who are paid less and work more are more likely to burn out sooner, leading to higher turnover and overall negative effects on worker capacity to provide quality family services.
+
+2.  Differences in substantiation percents may be associated with differences in living wage percents because higher substantiation percents could be driven by higher baseline maltreatment risks in poorer counties (who cannot pay workers a living wage). Higher substantiation percents indicate a higher workload because substantiated cases require worker intervention and can include extensive paperwork such as court reports, which translates to increased stress upon workers who are paid proportionally less than their counterparts in richer counties (which tend to have lower rates of allegations which lowers the overall workload). It may be that ER workers who are paid less and work more are more likely to burn out sooner, leading to higher turnover and overall negative effects on worker capacity to provide quality family services.
+
+There is sufficient variation across counties in California which allow for meaningful comparison and contrast of different and similar counties. Based on anecdotal evidence, rural counties are more politically conservative than urban counties, while certain large counties by child population tend to have lower child poverty rates and consequently lower allegation rates. The goal of this study is to explore whether such patterns show up in this sample and if other patterns emerge.
+
+## Control variables
+
+For both models:
+
+-   **Child poverty rate**: Child maltreatment is known to have direct links to child poverty, where poorer children are at higher risk of maltreatment. Poorer counties likely have higher rates of allegations, investigations, and substantiations, and they may pay workers less due to budget constraints. By controlling for child poverty, I avoid confounding the effect of lower wages driven by county impoverishment with the effect of investigation/substantiation percents.
+
+-   **County political climate**: More politically conservative counties are known to restrict funding for social services and therefore wages for CPS workers. In addition, they are known to promote a less interventionist approach to families (known as "family preservation" ideology) which may influence workers' propensity to investigate and substantiate cases. By controlling for political climate, I avoid confounding the effect of conservatism on lower wages with the effect of investigation/substantiation percents.
+
+-   **County agency size**: Larger agencies are likely to have more funding to hire more workers and may also tend to pay higher wages. By controlling for agency staff size, I avoid confounding the effect of bureaucratic idiosyncrasies on wages with the effect of investigation/substantiation percents.
+
+-   **County workload**: Agencies with high ratios of investigations to workers are likely understaffed, resulting in each worker taking on more cases or tasks than average. This relationship may counter any upward pressure on wages related to county size and resource availability. It is possible that both well-funded and underfunded agencies are understaffed due to a widespread front line worker retention crisis throughout CPS in California. Thus, including this control avoids confounding the effect of workload on wages with the effect of investigation/substantiation percents.
+
+\newpage
+# II. Method
+
+## Sample selection
+
+For all variables of interest, I compiled data for 53[^3] out of the 58 total counties in California for the calendar year 2022 because they are the most recent data available and may reflect current conditions of the CPS worker labor force (which are potentially highly variable over the past few years due to COVID). This cross-section of data allows me to first examine my variables of interest without accounting for time, such that I can later expand to a longitudinal analysis once I understand the relationships between my current variables. In this dataset, each row is a unique worker with a county identifier, department name, and position title. Thus, the level-1 unit is a worker nested within a county, while the level-2 unit is a county.
+
+[^3]: The five missing counties are Sierra, Santa Clara, Contra Costa, Mendocino, and Lassen, due to either lack of reporting to the state controller or missing worker wage data for calendar year 2022.
+
+## Data sources:
+
+### a. Wage data (dollars)
+
+The State Controller's Office (SCO) of California requires all counties and cities to report compensation data under sections [53891](https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=GOV&sectionNum=53891) and [53892](https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=GOV&sectionNum=53892) of the Government code. These data include "pay and benefit information for positions in cities, counties, special districts, and state government... SCO posts the information as it was reported by each public employer, and does not audit for accuracy" [(publicpay.ca.gov)](publicpay.ca.gov). The total wage data used in this study is directly downloaded from the "Downloads" tab on the Controller's website. Specifically, I downloaded the [2022 County Data](https://publicpay.ca.gov/RawExport/2022_County.zip) and [2022 City Data](https://publicpay.ca.gov/RawExport/2022_City.zip) csv files. The reason for including the city data file is that some counties are reported as cities, so they are only present in the city file. I filtered the dataset by each county's specific name for its department that contains its CPS agency, in addition to the title of the worker's position that is most likely to be a front-end worker (either hotline or ER worker). These position names were cross-checked by searching each county's website for relevant documentation or job postings and using information from the UC Berkeley MSW program Title IV-E career resources. I also dropped wages that were below the minimum annual wage for each position as reported in the original data ("MinPositionSalary") so that my sample only includes workers who were at least full-time (2,080 work hours per year or 40 hours per week). The units for this measure are in dollars.
+
+### b. Living wage data (dollars)
+
+Using living wage estimates from [livingwage.mit.edu](livingwage.mit.edu), I navigated to "California" on their main page, then clicked on each corresponding county's link to obtain the hourly living wage in dollars for two adults (one working) who have two children. I chose this value because it is approximately the midpoint in the "distribution" of estimates given by the living wage calculator (where on the low end is one adult working with no children, and the high end is two adults working with three children). I entered this hourly living wage into a spreadsheet by county, then multiplied them by 2,080 hours work hours to obtain an annualized living wage value in dollars. Finally, these data were joined to the main wage data such that each row corresponds to the county's estimated annualized living wage (in dollars).
+
+#### Living wage percent:
+
+My final response variable is a computed variable, the living wage percent, which is equal to each worker's annual total wage divided by the annualized living wage estimated for each county, then multiplied by 100 to convert to a percent unit. This number can be interpreted as the percent of the estimated living wage that each worker earned in 2022. The purpose of this transformation is to incorporate information about the cost of living in each county because higher paying counties often have higher living costs (and vice versa). I am interested in learning which workers earn a living wage in each county to more accurately characterize the financial well-being which could indicate lower work stress and better service capacity
+
+### c. Investigation/substantiation percents
+
+The number of children with allegations, investigations, and substantiations data by county were downloaded from the Child Welfare Indicators Project (CCWIP) secure site[^4]. For these data, I pulled the "JAN2022-DEC2022" columns and computed the following proportions for each county:
+
+[^4]: I have access to these data due to my affiliation to CCWIP as a graduate student researcher. This means that the public cannot directly access secure site data or download it for use. More restricted versions of these data are available on the public site [(ccwip.berkeley.edu)](ccwip.berkeley.edu).
+
+#### Investigation proportion (percent):
+
+This measure equals the number of children with investigations divided by the number of children with allegations times 100. One can interpret this as a percent measure of a county's propensity to investigate allegations (how interventionist it is, given the same maltreatment threshold) or as a measure of a county's child population vulnerability (more investigations means more allegations are identified as concerning). Both interpretations are important to consider because the statutory threshold for maltreatment is broadly defined and subject to discretion. Even with the help of structured decision making tools (SDM) at the front lines, workers are able to override SDM recommendations if they deem it necessary.
+
+#### Substantiation proportion (percent):
+
+This measure equals the number of children with substantiated investigations divided by the number of children with investigations times 100. One can interpret this as a percent measure of a county's propensity to substantiate investigations, which, similar to investigation percents, can be interpreted as some combination of county intervention propensity and actual underlying child population vulnerability. This project does not aim to trace this measure's root causes, but it attempts to first explore whether they are even related to wage ratios.
+
+### d. Child poverty rates (percent)
+
+These data were downloaded from CCWIP under their secure site (see footnote 4). The measure is equal to the estimated number of children in poverty divided by the estimated number of children living in a county multiplied by 100. I compute this proportion and multiply the decimals by 100 to convert to a percentage unit. According to CCWIP, these data are derived from the 5-year estimates from the American Community Survey (ACS) multipliers. The poverty population is the product of the ACS multiplier, while the child population estimates are from department of finance projections.
+
+### e. Percent voted for Biden
+
+Using data from [Politico](https://www.politico.com/2020-election/results/california/), I hand-entered in Excel the percent of a given county which voted for Biden in the 2020 presidential election as a measure for how conservative it is. This value is reported as "BIDEN PCT" in the "County results" portion on the Politico website.
+
+### f. Workers per agency (z-score)
+
+Using the wage data, I tabulated the number of rows per agency to construct the number of workers in each county (one agency per county) because each row in the wage dataset represents a worker. This measure is equivalent to the number of units per cluster in this project[^5]. I then subtract the mean number of workers per county from each observation and divide by the standard deviation of this measure to compute standardized z-score units to make interpretation easier.
+
+[^5]: This may be imprecise because each county may not fully report their wages, but a general summary statistic table shows that most of the large counties seem to be reporting reasonably sized worker counts based on anecdotal evidence.
+
+### g. Investigations to worker ratio (z-score)
+
+To capture a measure of workload, I divided the estimated number of children with investigations (from CCWIP) by the number of workers in each county (units equaling children per worker). This should give a general sense of how burdened a given county's workforce is because investigations constitute the subset of allegations that are screened in and require a worker to knock on a family's door, hence more time consuming and heavier work involved (than just screening calls). However, it may not be particularly precise due to uncertainty around how accurately this wage dataset captures worker count. Nevertheless, I compute the z-score for this measure by subtracting the mean ratio of children with investigations to workers for each county and divide by the standard deviation of the measure to make interpretation easier.
+
+\newpage
+# III. Models
+
+I estimate two multilevel random intercept models. The first model has $investalleg_{j}$ as the main independent variable of interest, and the second model estimates the $\beta_{2}$ coefficient for $subinv_{j}$ instead (all other covariates remaining the same). To be concise, I write out the first model explicitly only. The second model is identical except for the switching of the main independent variable of interest as mentioned above. The model is as follows:
+
+$$
+\begin{aligned}
+\begin{split}
+lwratio_{ij} &= \beta_1 +
+  \beta_{2}investalleg_{j} +
+  \beta_{3}childpovrt_{j} +\beta_{4}percbiden_{j} \\
+  &\beta_{5}scaledworker_{j} + \beta_{6}scaledcase_{j} + \zeta_{j} + \epsilon_{ij}
+\end{split}
+\end{aligned}
+$$ where:
+
+-   $i$ is the worker (level 1 unit)
+-   $j$ is the county that the worker is nested within (level 2 unit)
+-   $lwratio_{ij}$ is worker $i$'s total annual wages (dollars) divided by the annualized living wage (dollars) for county $j$ multiplied by 100 (living wage percent)
+-   $\beta_{1}$ is the population mean of the living wage ratio multiplied by 100
+-   $\beta_{2}$ is the association between the number of children with investigations divided by the number of children with allegations in county $j$ multiplied by 100 (the investigation percent) and the living wage percent[^6], controlling for:
+    -   $\beta_{3}$, the association between the number of children in poverty divided by the total child population in county $j$ multiplied by 100 (child poverty percent) and the living wage percent
+    -   $\beta_{4}$, the association between the percent of people who voted for Biden in the 2020 election in county $j$ (Biden percent) and the living wage percent
+    -   $\beta_{5}$, the association between the standardized (z-score) count of workers in county $j$ and the living wage percent
+    -   $\beta_{6}$, the association between the standardized (z-score) number of children with investigations divided by the number of workers in county $j$ and the living wage percent
+-   $\zeta_{j}$ is the level-2 residual (deviation of county $j$'s mean living wage percent from the population mean)
+-   $\epsilon_{ij}$ is the level-1 residual (deviation of the living wage percent for worker $i$ from county $j$ mean)
+
+[^6]: For the second model, $\beta_{2}$ is the association between the number of children with substantiated investigations divided by the total number of children with investigations (substantiated plus unsubstantiated) multiplied by 100 (the substantiation percent) and the living wage percent, controlling for the same covariates.
+
+In addition:
+
+-   $\zeta_{j}$ is assumed to have a normal distribution with mean zero and variance $\psi$ (between-cluster variance)
+-   $\epsilon_{ij}$ is assumed to have a normal distribution with mean zero and variance $\theta$ (within-cluster) variance
+
+My primary parameter of interest is $\beta_{2}$ because I hypothesize that counties with higher investigation and substantiation percents will have lower living wage percents ($\beta_{2}$ will be negative in both models) controlling for child poverty, staff size, investigations to staff ratio, and political conservatism; this hypothesis is based on anecdotal evidence that counties with high investigation and substantiation percents tend to have less resources in general, as most allegations of maltreatment involved child neglect which is highly associated with conditions generated by child poverty. Because CPS worker wages are constrained by the amount of general funding available to a county, poorer counties place a higher labor burden on their workers because they are not able to pay (and thus retain/attract) workers as competitively as richer counties despite having relatively higher proportions of investigations due to higher rates of child poverty. These two parameters should answer my research questions because they estimate how every percentage point increase in the investigation/substantiation percent influences the living wage percent.
+
+
+```{r}
+#load packages
+library(dplyr)
+library(openxlsx)
+library(reshape2)
+library(tidyr)
+library(broom)
+library(fBasics)
+library(stargazer)
+library(lubridate)
+library(outliers)
+library(robust)
+library(car)
+library(modelr)
+library(fRegression)
+library(jtools)
+library(knitr)
+library(kableExtra)
+
+
+library(readxl)
+library(stringr)
+library(magrittr)
+library(ggplot2)
+library(reshape)
+library(forcats)
+library(scales)
+
+#packages for HLM
+library(tidyverse)
+library(easystats)
+library(haven)
+library(labelled)
+library(curl)
+library(janitor)
+library(gtsummary)
+library(broom)
+library(broom.mixed)
+library(ggeffects)
+library(multcomp)
+library(lmtest)
+library(sandwich)
+library(contrast)
+library(plm)
+library(lme4)
+library(lmerTest)
+library(lmtest)
+library(merTools)
+library(pbkrtest)
+library(patchwork)
+library(clubSandwich)
+library(MASS)
+library(writexl)
+library(texreg)
+```
+
+```{r}
+#read in exported data relevantcounties.xlsx generated by payanalysis.R script (data cleaning)
+relevantcounties <- as.data.frame(read_excel("/Users/sofia/Library/Mobile Documents/com~apple~CloudDocs/Box Backup/QP/Data/Wages/CA/relevantcounties.xlsx"))
+#factorize EmployerCounty
+relevantcounties$EmployerCounty <- factor(relevantcounties$EmployerCounty)
+```
+
+
+\newpage
+# IV. Description
+
+```{r, results='asis',fig.pos='H',fig.align='center'}
+summarystats <- as.data.frame(relevantcounties[,c("LWratio","ChildPovRt","InvAlleg","SubInv","PercBiden","scaledworker", "scaledcase")])
+
+#descriptive statistics table
+stargazer(summarystats,type='latex', header = F, title='Summary statistics', digits = 2)
+```
+```{r,echo=FALSE, results='asis',fig.pos='H',fig.align='center'}
+cluster_summary <- relevantcounties %>%
+  dplyr::summarise(
+    Mean = mean(TotalWorkers),
+    SD = sd(TotalWorkers),
+    Min = min(TotalWorkers),
+    Max = max(TotalWorkers),
+    Units = n())
+
+kable(cluster_summary, caption = "Cluster summary statistics: Total workers per county", digits = 2)
+```
+In this sample, there are 53 clusters (counties) and 8,157 level-1 units (workers). The average cluster size is 1,795 workers per county, with a standard deviation of 1,634 workers, a minimum of one worker in a county, and maximum of 3,614 workers in Los Angeles (LA) County. These figures make sense due to the wide variation in county size. For example, LA houses more than two million children, which constitutes nearly 25% of California's child population. Meanwhile, the smallest county Alpine has a child population of 204 children, which amounts to far less than one percent of the state child population, hence the singular worker in a county is also reasonable. This disparity is what drives the large standard deviation in total workers per cluster. The five missing counties (out of 58 total) are Sierra, Santa Clara, Contra Costa, Mendocino, and Lassen, due to either lack of reporting to the state controller or missing worker wage data for calendar year 2022. Santa Clara and Contra Costa are two large counties in the Bay Area region of the state, who had child populations of approximately 500,000 children and 300,000 in 2022, respectively (according to CCWIP). Due to the potentially high number of workers (I estimate around 400-500 total between them based on similar local counties) they employ, these two counties' omission from this estimation sample may influence the estimates somewhat. Sierra, Mendocino, and Lassen counties are much smaller counties with a total child population of roughly 28,000 children combined, so the number of workers they employ are likely much less than 100 in sum. Otherwise, for the estimation sample, there are no missing data for each variable of interest outlined in the models.
+
+For the z-score variables $scaledworker$ and $scaledcase$ (see section I for details on construction), the respective non-transformed means are 1,795 workers per county with a standard deviation of 1,634 workers, while the second variable has a mean of 35 investigations per worker with a standard deviation of 29 investigations. These are represented by the zero value in the summary statistics table, such that a value of -1.1 indicates 1.1 standard deviations below the mean and a value of 42 indicates 42 standard deviations above the mean.
+
+```{r,echo=FALSE, results='asis',fig.pos='H',fig.align='center'}
+# (1) Overall summary
+overall_sum <- relevantcounties %>%
+  summarize(
+    Mean = mean(LWratio),
+    SD = sd(LWratio),
+    Min = min(LWratio),
+    Max = max(LWratio),
+    N = n()
+  )
+
+# (2) Between-group summary
+between_sum <- relevantcounties %>%
+  group_by(EmployerCounty) %>%
+  summarize(
+    gr_mean = mean(LWratio), 
+    n_j = n()
+  ) %>%
+  ungroup() %>%
+  summarize(
+    Mean = sjstats::weighted_mean(gr_mean, weights = n_j),
+    SD = sd(gr_mean, na.rm = TRUE),
+    Min = min(gr_mean, na.rm = TRUE),
+    Max = max(gr_mean, na.rm = TRUE),
+    N = n()
+  )  
+
+# (3) Within-group summary
+df_dev <- relevantcounties %>%
+  group_by(EmployerCounty) %>%
+  mutate(
+    gr_mean = mean(LWratio),
+    dev = LWratio - gr_mean,
+    size = n()
+  ) %>% ungroup() 
+  
+overall_mean <- df_dev %>%
+  summarize(mean(LWratio)) %>% pull()
+  
+nj_bar <- df_dev %>%
+  group_by(EmployerCounty) %>%
+  summarize(n_j = n()) %>% pull(n_j) %>% mean()
+  
+within_sum <- df_dev %>%
+  summarize(
+    Mean = mean(dev, na.rm = TRUE) + overall_mean,
+    SD = sd(dev, na.rm = TRUE),
+    Min = min(dev, na.rm = TRUE) + overall_mean,
+    Max = max(dev, na.rm = TRUE) + overall_mean,
+    N = nj_bar)
+```
+
+
+```{r,echo=FALSE, results='asis',fig.pos='H',fig.align='center'}
+# Generate and return the final table
+tbl_xtsum <- bind_rows(
+  overall_sum, between_sum, within_sum
+) %>%
+  mutate(Level = c("Overall", "Between", "Within")) %>%
+  dplyr::select(Level, everything())
+```
+
+```{r,echo=FALSE, results='asis',fig.pos='H',fig.align='center'}
+kable(tbl_xtsum, caption = "Overall, between and within-cluster living wage percent statistics", digits = 2)
+```
+
+```{r,echo=FALSE, results='asis',fig.pos='H',fig.align='center', fig.height=4}
+#distribution of living wage
+ggplot(relevantcounties, aes(LWratio)) +
+  geom_histogram(binwidth=1)+
+    geom_vline(xintercept = 100, linetype = "dotted")+
+  labs(x = "Percent of living wage percent earned", y="Count",
+       title= "Distribution of CPS worker living wage percent",
+       caption = "Wage data from publicpay.ca.gov; living wage data from livingwage.mit.edu; InvAlleg = % of allegations investigated")+
+  theme_minimal() +
+  theme(plot.caption = element_text(hjust = 0),
+        legend.position = "right",
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(colour = "grey", size = .1),
+        axis.text.x = element_text(angle = 90, hjust = 1))
+
+```
+The distribution of the living wage percent response variable seems to be bimodal, with somewhat symmetric peaks and a trough centered at 100 percent of the living wage. This indicates that most counties tend to either pay slightly below a living wage (around 80-90 percent), while a smaller group clusters above around 110 percent. Based on a faceted plot of distributions by region and county size, it seems that large southern counties are primarily driving this bimodality (see appendix for figure). Counties outside of that size class and region seem to have relatively normal distributions (excluding small counties).
+
+\newpage
+# V. Multilevel modeling
+I fit the two linear random intercept models detailed in section III:
+
+```{r,echo=FALSE, results='asis', fig.pos='H',fig.align='center'}
+
+# (1) Fit the random-intercept model using lmer()
+mod_lmer1 <- lmer(
+  formula = LWratio ~ InvAlleg +  ChildPovRt + PercBiden + scaledworker +scaledcase +(1 | EmployerCounty),
+  REML = F,
+  data = relevantcounties
+)
+
+# (2) Fit the random-intercept model using lmer()
+mod_lmer2 <- lmer(
+  formula = LWratio ~ SubInv + ChildPovRt + PercBiden + scaledworker +scaledcase +(1 | EmployerCounty),
+  REML = F,
+  data = relevantcounties
+)
+
+#view results
+texreg(list(mod_lmer1,mod_lmer2), caption="Random intercept linear multilevel model regression results",caption.above = T, custom.coef.map=list("InvAlleg"="Investigation %","SubInv"="Substantiation %","ChildPovRt"="Child Poverty %","PercBiden"="Voted Biden %","scaledworker"="No. Workers/Agency","scaledcase"="No. Investigations/Worker"))
+```
+
+
+
+\newpage
+# VI. Discussion
+
+Concise summary and brief mention of implications/limitations provided.
+
+\newpage
+# VII. Appendix
+## Residual diagnostics:
+
+## Stata code:
+
+## R code:
+
+## Additional figures:
+
+```{r,echo=FALSE, results='asis',fig.pos='H',fig.align='center', fig.width=6, fig.height=4}
+#distribution of living wage facet grid
+ggplot(relevantcounties, aes(LWratio)) +
+  geom_histogram(binwidth=1)+
+    geom_vline(xintercept = 100, linetype = "dotted")+
+  labs(x = "Percent of living wage percent earned", y="Count",
+       title= "Distribution of CPS worker living wage percent",
+       caption = "Wage data from publicpay.ca.gov; living wage data from livingwage.mit.edu; InvAlleg = % of allegations investigated")+
+  facet_grid(Region~ChildPopSize, scales = "free") + 
+  theme_minimal() +
+  theme(plot.caption = element_text(hjust = 0),
+        legend.position = "right",
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(colour = "grey", size = .1),
+        axis.text.x = element_text(angle = 90, hjust = 1))
+
+```
+
+```{r,echo=FALSE, results='asis',fig.pos='H', fig.align='center', fig.width=10, fig.height=8}
+#distribution of response variables
+# InvAlleg
+wages_lwratio_invalleg <- ggplot(relevantcounties, aes(LWratio, fct_reorder(EmployerCounty, LWratio, .fun='median'), group = InvAlleg, color = InvAlleg)) +
+  geom_boxplot(show.legend = T,
+               outlier.size = 0.3,
+               outlier.alpha = 0.5)+
+  geom_vline(xintercept = 100, linetype = "dotted")+
+  #geom_violin(width=1.4)+
+  #geom_jitter(color="grey", size=0.2, alpha=0.3) +
+  labs(x = "Percent of living wage earned", y="County",
+       title= "Percent of living wage earned by region and county size in CY 2022 (displaying investigation percent)",
+       caption = "Wage data from publicpay.ca.gov; living wage data from livingwage.mit.edu; InvAlleg = % of allegations investigated")+
+  facet_wrap(ChildPopSize~Region, scales = "free_y", dir = "v")+
+  #facet_grid(ChildPopSize~CAlocation, scales = "free_y", switch = "both") +
+  theme_minimal() +
+  theme(plot.caption = element_text(hjust = 0),
+        legend.position = "right",
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(colour = "grey", size = .1),
+        axis.text.x = element_text(angle = 90, hjust = 1))+
+  scale_x_continuous(breaks = seq(0,200,20), limits = range(0,200))+
+  scale_color_gradient2(midpoint = mean(relevantcounties$`InvAlleg`), low = "blue", mid = "orange", high = "red", space = "Lab" )
+
+wages_lwratio_invalleg
+```
+
+```{r,echo=FALSE, results='asis',fig.pos='H', fig.align='center', fig.width=10, fig.height=8}
+#SubInv
+wages_lwratio_subinv <- ggplot(relevantcounties, aes(LWratio, fct_reorder(EmployerCounty, LWratio, .fun='median'), group = SubInv, color = SubInv)) +
+  geom_boxplot(show.legend = T,
+               outlier.size = 0.3,
+               outlier.alpha = 0.5)+
+  geom_vline(xintercept = 100, linetype = "dotted")+
+  #geom_violin(width=1.4)+
+  #geom_jitter(color="grey", size=0.2, alpha=0.3) +
+  labs(x = "Percent of living wage earned", y="County",
+       title= "Percent of living wage earned by region and county size in CY 2022 (displaying substantiation percent)",
+       caption = "Wage data from publicpay.ca.gov; living wage data from livingwage.mit.edu; InvAlleg = % of investigations substantiated")+
+  facet_wrap(ChildPopSize~Region, scales = "free_y", dir = "v")+
+  #facet_grid(ChildPopSize~CAlocation, scales = "free_y", switch = "both") +
+  theme_minimal() +
+  theme(plot.caption = element_text(hjust = 0),
+        legend.position = "right",
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(colour = "grey", size = .1),
+        axis.text.x = element_text(angle = 90, hjust = 1))+
+  scale_x_continuous(breaks = seq(0,200,20), limits = range(0,200))+
+  scale_color_gradient2(midpoint = mean(relevantcounties$`SubInv`), low = "blue", mid = "orange", high = "red", space = "Lab" )
+
+wages_lwratio_subinv
+```
+
